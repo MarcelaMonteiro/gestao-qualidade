@@ -13,7 +13,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String
@@ -24,13 +24,3 @@ model User {
   @@map("users")
 }
 
-model Record {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  source      String
-  status      String   @default("pendente")
-  createdAt   DateTime @default(now())
-
-  @@map("records")
-}
