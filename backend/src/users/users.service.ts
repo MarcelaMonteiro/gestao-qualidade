@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import bcrypt from 'bcrypt';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
@@ -17,12 +16,27 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prismaService.user.findMany();
+    return this.prismaService.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        isActive: true,
+        name: true,
+        role: true,
+      },
+    });
   }
 
   findOne(id: string) {
     return this.prismaService.user.findUnique({
       where: { id },
+      select: {
+        id: true,
+        email: true,
+        isActive: true,
+        name: true,
+        role: true,
+      },
     });
   }
 
