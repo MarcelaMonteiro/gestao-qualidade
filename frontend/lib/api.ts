@@ -1,4 +1,8 @@
+import { redirect } from "next/navigation";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+
+const ENDPOINT_PUBLICO = ["/auth/login"];
 
 export class ApiError extends Error {
 	constructor(
@@ -27,6 +31,10 @@ async function request<T>(
 		},
 		body: body !== undefined ? JSON.stringify(body) : undefined,
 	});
+
+	if (response.status === 401 && !ENDPOINT_PUBLICO.includes(path)) {
+		redirect("/login");
+	}
 
 	const data = await response.json().catch(() => null);
 
