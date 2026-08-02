@@ -39,8 +39,8 @@ export default function LoginPage() {
 	return (
 		<div className="flex flex-1 items-center justify-center px-6 py-12">
 			<div className="w-full max-w-sm rounded-lg border border-border bg-surface p-8 shadow-md">
-				<h1 className="text-xl font-semibold text-text">Entrar</h1>
-				<p className="mt-1 text-sm text-text-secondary">
+				<h1 className="text-xl font-semibold text-text text-center">Entrar</h1>
+				<p className="mt-1 text-sm text-center text-text-secondary">
 					Acesse sua conta para continuar.
 				</p>
 
@@ -58,6 +58,7 @@ export default function LoginPage() {
 							type="email"
 							autoComplete="email"
 							{...register("email")}
+							required
 							className="rounded-md border border-border bg-surface px-3 py-2 text-text outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary-100"
 						/>
 						{errors.email && (
@@ -68,10 +69,7 @@ export default function LoginPage() {
 					</div>
 
 					<div className="flex flex-col gap-1.5">
-						<label
-							htmlFor="password"
-							className="text-sm font-medium text-text"
-						>
+						<label htmlFor="password" className="text-sm font-medium text-text">
 							Senha
 						</label>
 						<input
@@ -79,6 +77,7 @@ export default function LoginPage() {
 							type="password"
 							autoComplete="current-password"
 							{...register("password")}
+							required
 							className="rounded-md border border-border bg-surface px-3 py-2 text-text outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary-100"
 						/>
 						{errors.password && (
@@ -97,7 +96,7 @@ export default function LoginPage() {
 					<button
 						type="submit"
 						disabled={isSubmitting}
-						className="mt-2 rounded-md bg-primary px-4 py-2.5 font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+						className="mt-2 cursor-pointer rounded-md bg-primary px-4 py-2.5 font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
 					>
 						{isSubmitting ? "Entrando..." : "Entrar"}
 					</button>
