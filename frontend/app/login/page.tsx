@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { login } from "@/store/auth-store";
+import { Eye, EyeOff } from "lucide-react";
 
 const loginSchema = z.object({
 	email: z.email("Informe um e-mail válido."),
@@ -15,6 +17,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
 	const router = useRouter();
+	const [mostrarSenha, setMostrarSenha] = useState(false);
 
 	const {
 		register,
@@ -72,14 +75,29 @@ export default function LoginPage() {
 						<label htmlFor="password" className="text-sm font-medium text-text">
 							Senha
 						</label>
-						<input
-							id="password"
-							type="password"
-							autoComplete="current-password"
-							{...register("password")}
-							required
-							className="rounded-md border border-border bg-surface px-3 py-2 text-text outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary-100"
-						/>
+						<div className="relative">
+							<input
+								id="password"
+								type={mostrarSenha ? "text" : "password"}
+								autoComplete="current-password"
+								{...register("password")}
+								required
+								className="w-full rounded-md border border-border bg-surface px-3 py-2 pr-10 text-text outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary-100"
+							/>
+							<button
+								type="button"
+								onClick={() => setMostrarSenha((v) => !v)}
+								aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+								tabIndex={-1}
+								className="absolute inset-y-0 right-0 flex items-center px-3 text-text-muted transition-colors hover:text-text"
+							>
+								{mostrarSenha ? (
+									<EyeOff className="h-4.5 w-4.5" />
+								) : (
+									<Eye className="h-4.5 w-4.5" />
+								)}
+							</button>
+						</div>
 						{errors.password && (
 							<p role="alert" className="text-sm text-danger">
 								{errors.password.message}
