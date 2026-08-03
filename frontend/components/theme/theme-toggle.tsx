@@ -12,7 +12,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
       title={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
-      className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-surface-muted"
+      className="flex h-9 cursor-pointer w-9 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-surface-muted"
     >
       {isDark ? (
         <svg
