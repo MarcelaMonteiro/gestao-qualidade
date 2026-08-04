@@ -32,6 +32,12 @@ export class AuthService {
       throw new UnauthorizedException('Senha inválida.');
     }
 
+    if (!user.isActive) {
+      throw new UnauthorizedException(
+        'Sua conta está desativada. Entre em contato com um administrador.',
+      );
+    }
+
     const token = jwt.sign(
       { sub: user.id, email: user.email },
       process.env.JWT_SECRET!,
