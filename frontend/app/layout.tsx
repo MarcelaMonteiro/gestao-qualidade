@@ -43,9 +43,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <Script id="no-flash-theme" strategy="beforeInteractive">
-          {noFlashThemeScript}
-        </Script>{" "}
+        <script
+          type={typeof window === "undefined" ? "text/javascript" : "text/plain"}
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: noFlashThemeScript }}
+        />
       </head>
       <body className="min-h-full flex flex-col bg-canvas text-text">
         <ThemeProvider>
