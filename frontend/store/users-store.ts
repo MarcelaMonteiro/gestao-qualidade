@@ -3,7 +3,9 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { api, ApiError } from "@/lib/api";
+import { toQueryString } from "@/lib/search-params";
 import type { User } from "@/types/user";
+import type { PaginatedResult } from "@/types/pagination";
 
 const ACCESS_TOKEN_COOKIE = "accessToken";
 
@@ -15,8 +17,21 @@ async function authHeader() {
   return { Authorization: `Bearer ${token}` };
 }
 
-export async function getUsers(): Promise<User[]> {
-  return api.get<User[]>("/users", { headers: await authHeader() });
+export type GetUsersParams = {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  role?: "USER" | "ADMIN";
+  isActive?: boolean;
+};
+
+export async function getUsers(
+  params: GetUsersParams = {},
+): Promise<PaginatedResult<User>> {
+  const query = toQueryString(params);
+  return api.get<PaginatedResult<User>>(`/users${query}`, {
+    headers: await authHeader(),
+  });
 }
 
 export async function setUserStatus(
