@@ -13,6 +13,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import type { AuthenticatedRequest } from './types/auth.type';
 import { UsersService } from 'src/users/users.service';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -39,5 +40,18 @@ export class AuthController {
   @Get('/me')
   me(@Req() request: AuthenticatedRequest) {
     return this.usersService.findOne(request.user.sub);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('/me')
+  updateMe(
+    @Req() request: AuthenticatedRequest,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return this.usersService.update(
+      request.user.sub,
+      updateProfileDto,
+      request.user.sub,
+    );
   }
 }
