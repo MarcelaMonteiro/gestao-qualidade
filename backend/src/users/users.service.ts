@@ -5,9 +5,12 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FindUsersQueryDto } from './dto/find-users-query.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { Prisma } from 'generated/prisma/client';
+import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
+import { buildPaginationMeta } from '../common/utils/pagination.util';
 
 const SAFE_USER_SELECT = {
   id: true,
@@ -16,6 +19,8 @@ const SAFE_USER_SELECT = {
   role: true,
   isActive: true,
 } as const;
+
+type SafeUser = Prisma.UserGetPayload<{ select: typeof SAFE_USER_SELECT }>;
 
 @Injectable()
 export class UsersService {
@@ -49,8 +54,32 @@ export class UsersService {
     );
   }
 
-  findAll() {
-    return this.prismaService.user.findMany({ select: SAFE_USER_SELECT });
+  async findAll(query: FindUsersQueryDto): Promise<PaginatedResult<SafeUser>> {
+    const { page, pageSize, search, role, isActive } = query;
+
+    const where: Prisma.UserWhereInput = {
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+        ],
+      }),
+      ...(role && { role }),
+      ...(isActive !== undefined && { isActive }),
+    };
+
+    const [data, total] = await Promise.all([
+      this.prismaService.user.findMany({
+        where,
+        select: SAFE_USER_SELECT,
+        orderBy: { name: 'asc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prismaService.user.count({ where }),
+    ]);
+
+    return { data, meta: buildPaginationMeta(total, page, pageSize) };
   }
 
   findOne(id: string) {
