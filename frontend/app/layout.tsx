@@ -2,20 +2,22 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+import Script from "next/script";
 
 const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-	title: "Gestão da Qualidade",
-	description: "Sistema de gestão da qualidade",
+  title: "Gestão da Qualidade",
+  description: "Sistema de gestão da qualidade",
 };
 
 const noFlashThemeScript = `
@@ -30,24 +32,27 @@ const noFlashThemeScript = `
 `;
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html
-			lang="pt-BR"
-			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-			suppressHydrationWarning
-		>
-			<head>
-				<script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
-			</head>
-			<body className="min-h-full flex flex-col bg-canvas text-text">
-				<ThemeProvider>
-					<main className="flex flex-1 flex-col">{children}</main>
-				</ThemeProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html
+      lang="pt-BR"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <Script id="no-flash-theme" strategy="beforeInteractive">
+          {noFlashThemeScript}
+        </Script>{" "}
+      </head>
+      <body className="min-h-full flex flex-col bg-canvas text-text">
+        <ThemeProvider>
+          <main className="flex flex-1 flex-col">{children}</main>
+          <Toaster />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }
